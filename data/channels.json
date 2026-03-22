@@ -12,7 +12,7 @@
     "subscribers": 2,
     "verified": false,
     "id": "40e0440e-f7fe-47ec-83db-5591c0824277",
-    "name": "codeyogiai@gmail.com",
+    "name": "kalu",
     "avatar_url": "/uploads/thumbnails/1774168369851-thumbnail.jpg",
     "banner_url": "/uploads/thumbnails/1774168822554-thumbnail.jpg",
     "bio": "",
@@ -32,9 +32,12 @@
     "id": "57f33cf6-a0b3-4633-b265-038877c29db6",
     "name": "himanshu",
     "avatar_url": "",
-    "subscribers": 0,
+    "subscribers": 1,
     "verified": false,
     "banner_url": "",
-    "bio": ""
+    "bio": "",
+    "subscriber_ids": [
+      "40e0440e-f7fe-47ec-83db-5591c0824277"
+    ]
   }
 }

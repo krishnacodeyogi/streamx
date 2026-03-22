@@ -1,13 +1,17 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { getChannel, getVideos } from '@/lib/api';
+import type { Video } from '@/types';
 import VideoCard from '@/components/home/VideoCard';
+import SubscribeButton from '@/components/channel/SubscribeButton';
 import { CheckCircle2, Users } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
 interface PageProps {
   params: { id: string };
+  searchParams: { tab?: string };
 }
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
@@ -20,12 +24,21 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
-export default async function ChannelPage({ params }: { params: { id: string } }) {
+export default async function ChannelPage({ params, searchParams }: PageProps) {
   const { id } = params;
   const channel = await getChannel(id);
   if (!channel) notFound();
 
-  const videos = await getVideos({ channelId: id });
+  const tab = searchParams.tab || 'videos';
+
+  let videos: Video[] = [];
+  if (tab === 'videos' || tab === 'shorts') {
+    videos = await getVideos({ 
+      channelId: id, 
+      shortsOnly: tab === 'shorts',
+      excludeShorts: tab === 'videos'
+    });
+  }
 
   return (
     <div className="min-h-screen pb-16">
@@ -65,32 +78,62 @@ export default async function ChannelPage({ params }: { params: { id: string } }
             )}
           </div>
           <div className="sm:pt-16 shrink-0">
-            <button className="px-6 py-2 bg-text-primary text-surface-primary font-medium rounded-full hover:bg-text-secondary transition-colors">
-              Subscribe
-            </button>
+            <SubscribeButton channelId={channel.id} />
           </div>
         </div>
 
-        {/* Channel Content Nav (placeholder) */}
+        {/* Channel Content Nav */}
         <div className="flex items-center gap-6 border-b border-border mb-6 overflow-x-auto scrollbar-none">
-          <button className="py-3 text-text-primary border-b-2 border-text-primary font-medium whitespace-nowrap">
+          <Link
+            href={`/channel/${channel.id}?tab=videos`}
+            className={`py-3 font-medium whitespace-nowrap transition-colors ${
+              tab === 'videos'
+                ? 'text-text-primary border-b-2 border-text-primary'
+                : 'text-text-muted hover:text-text-primary border-b-2 border-transparent'
+            }`}
+          >
             Videos
-          </button>
-          <button className="py-3 text-text-muted hover:text-text-primary font-medium whitespace-nowrap transition-colors">
+          </Link>
+          <Link
+            href={`/channel/${channel.id}?tab=shorts`}
+            className={`py-3 font-medium whitespace-nowrap transition-colors ${
+              tab === 'shorts'
+                ? 'text-text-primary border-b-2 border-text-primary'
+                : 'text-text-muted hover:text-text-primary border-b-2 border-transparent'
+            }`}
+          >
             Shorts
-          </button>
-          <button className="py-3 text-text-muted hover:text-text-primary font-medium whitespace-nowrap transition-colors">
+          </Link>
+          <Link
+            href={`/channel/${channel.id}?tab=playlists`}
+            className={`py-3 font-medium whitespace-nowrap transition-colors ${
+              tab === 'playlists'
+                ? 'text-text-primary border-b-2 border-text-primary'
+                : 'text-text-muted hover:text-text-primary border-b-2 border-transparent'
+            }`}
+          >
             Playlists
-          </button>
-          <button className="py-3 text-text-muted hover:text-text-primary font-medium whitespace-nowrap transition-colors">
+          </Link>
+          <Link
+            href={`/channel/${channel.id}?tab=community`}
+            className={`py-3 font-medium whitespace-nowrap transition-colors ${
+              tab === 'community'
+                ? 'text-text-primary border-b-2 border-text-primary'
+                : 'text-text-muted hover:text-text-primary border-b-2 border-transparent'
+            }`}
+          >
             Community
-          </button>
+          </Link>
         </div>
 
-        {/* Video Grid */}
-        {videos.length === 0 ? (
+        {/* Content Area */}
+        {tab === 'playlists' || tab === 'community' ? (
+          <div className="text-center py-20 text-text-muted">
+            <p className="text-lg">This section is coming soon!</p>
+          </div>
+        ) : videos.length === 0 ? (
           <div className="text-center py-12 text-text-muted">
-            <p>This channel has no videos yet.</p>
+            <p>This channel has no {tab === 'shorts' ? 'shorts' : 'videos'} yet.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-8">

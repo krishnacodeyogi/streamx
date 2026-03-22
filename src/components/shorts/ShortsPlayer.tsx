@@ -255,22 +255,23 @@ function ShortCard({
           preload="metadata"
         />
 
+        {/* Bottom Gradient for readability */}
+        <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none z-0" />
+
         {/* Play/Pause center icon (shown briefly on tap) */}
         {!playing && isActive && (
-          <button
-            onClick={togglePlay}
-            className="absolute inset-0 flex items-center justify-center bg-black/10"
-          >
-            <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center">
-              <Play className="w-8 h-8 text-white ml-1" fill="white" />
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+            <div className="w-20 h-20 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center animate-in fade-in zoom-in duration-200">
+              <Play className="w-10 h-10 text-white ml-1 drop-shadow-lg" fill="white" />
             </div>
-          </button>
+          </div>
         )}
 
         {/* Progress bar at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 z-10">
+        <div className="absolute bottom-0 left-0 right-0 h-1 z-20 group/progress cursor-pointer touch-none">
+          <div className="absolute inset-0 bg-white/30" />
           <div
-            className="h-full bg-brand transition-all duration-200"
+            className="absolute top-0 left-0 bottom-0 bg-brand transition-all duration-75 ease-linear group-hover/progress:h-1.5 group-hover/progress:-translate-y-0.5"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -289,72 +290,72 @@ function ShortCard({
         </button>
 
         {/* Right-side action buttons */}
-        <div className="absolute right-3 bottom-24 flex flex-col items-center gap-5 z-10">
+        <div className="absolute right-3 bottom-8 flex flex-col items-center gap-6 z-10 pb-4">
+          <div className="relative mb-2 group cursor-pointer">
+            <div className="w-11 h-11 rounded-full p-[2px] bg-gradient-to-tr from-brand to-brand/60">
+              <img
+                src={avatarError ? `https://picsum.photos/seed/${video.channel.id}/64/64` : avatarUrl}
+                alt={video.channel.name}
+                className="w-full h-full rounded-full object-cover border-2 border-black"
+                onError={() => setAvatarError(true)}
+              />
+            </div>
+            {!subscribed && !isOwner && (
+              <button 
+                onClick={handleSubscribe}
+                className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-brand text-white w-5 h-5 rounded-full flex items-center justify-center border border-white hover:scale-110 transition-transform shadow-md"
+              >
+                <span className="text-xs leading-none font-bold">+</span>
+              </button>
+            )}
+          </div>
+
           <ActionButton
-            icon={<ThumbsUp className="w-6 h-6" fill={reaction === 'like' ? 'currentColor' : 'none'} />}
+            icon={<ThumbsUp className="w-7 h-7" fill={reaction === 'like' ? 'currentColor' : 'none'} />}
             label={formatViews(likeCount)}
             onClick={handleLike}
             active={reaction === 'like'}
           />
           <ActionButton
-            icon={<ThumbsDown className="w-6 h-6" fill={reaction === 'dislike' ? 'currentColor' : 'none'} />}
+            icon={<ThumbsDown className="w-7 h-7" fill={reaction === 'dislike' ? 'currentColor' : 'none'} />}
             label="Dislike"
             onClick={handleDislike}
             active={reaction === 'dislike'}
           />
           <ActionButton
-            icon={<MessageCircle className="w-6 h-6" />}
+            icon={<MessageCircle className="w-7 h-7" />}
             label="0"
           />
           <ActionButton
-            icon={<Share2 className="w-6 h-6" />}
+            icon={<Share2 className="w-7 h-7" />}
             label="Share"
           />
           {isOwner && (
             <ActionButton
-              icon={<Trash2 className="w-6 h-6" />}
+              icon={<Trash2 className="w-7 h-7" />}
               label="Delete"
               onClick={handleDelete}
             />
           )}
           <ActionButton
-            icon={<MoreVertical className="w-6 h-6" />}
+            icon={<MoreVertical className="w-7 h-7" />}
             label=""
           />
-
-          {/* Channel avatar */}
-          <div className="relative">
-            <img
-              src={avatarError ? `https://picsum.photos/seed/${video.channel.id}/64/64` : avatarUrl}
-              alt={video.channel.name}
-              className="w-9 h-9 rounded-full border-2 border-white object-cover"
-              onError={() => setAvatarError(true)}
-            />
-          </div>
         </div>
 
         {/* Bottom info overlay */}
-        <div className="absolute bottom-2 left-0 right-14 p-4 z-10">
+        <div className="absolute bottom-4 left-0 right-16 px-4 pb-2 z-10">
           {/* Channel name */}
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-white font-semibold text-sm">
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="text-white font-bold text-[15px] drop-shadow-md">
               @{video.channel.name.replace(/\s+/g, '').toLowerCase()}
             </span>
             {video.channel.verified && (
-              <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="currentColor">
+              <svg className="w-4 h-4 text-brand drop-shadow-sm" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z" />
               </svg>
             )}
-            <button
-              onClick={handleSubscribe}
-              className={`ml-1 px-3 py-1 text-xs font-semibold rounded-full transition-colors ${
-                subscribed
-                  ? 'bg-white/30 text-white hover:bg-white/40'
-                  : 'bg-white text-black hover:bg-gray-200'
-              }`}
-            >
-              {subscribed ? 'Subscribed' : 'Subscribe'}
-            </button>
+            {/* If they want to subscribe text button as well, keep it, else we have the '+' button */}
           </div>
 
           {/* Title / Description */}
@@ -362,25 +363,29 @@ function ShortCard({
             className="cursor-pointer"
             onClick={(e) => { e.stopPropagation(); setShowDesc(!showDesc); }}
           >
-            <p className={`text-white text-sm ${showDesc ? '' : 'line-clamp-2'}`}>
+            <p className={`text-white text-[14px] leading-snug drop-shadow-md font-medium ${showDesc ? '' : 'line-clamp-2'}`}>
               {video.title}
-              {video.description && ` — ${video.description}`}
+              {video.description && (
+                <span className="text-white/80 font-normal">
+                  <br />{video.description}
+                </span>
+              )}
             </p>
           </div>
 
           {/* Category tag */}
           {video.category && video.category !== 'All' && (
-            <span className="inline-block mt-2 px-2 py-0.5 bg-white/20 text-white text-xs rounded-full">
-              #{video.category}
-            </span>
+            <div className="mt-3 flex gap-2">
+              <span className="px-2.5 py-1 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white text-xs font-semibold rounded-full cursor-pointer transition-colors shadow-sm">
+                {video.category}
+              </span>
+            </div>
           )}
         </div>
       </div>
     </div>
   );
 }
-
-/* ─── Action Button ──────────────────────────────────────────────────────────── */
 
 function ActionButton({
   icon,
@@ -394,12 +399,14 @@ function ActionButton({
   active?: boolean;
 }) {
   return (
-    <button onClick={onClick} className="flex flex-col items-center gap-1 group/action">
-      <div className={`hover:text-brand transition-colors group-active/action:scale-90 ${active ? 'text-brand' : 'text-white'}`}>
-        {icon}
+    <button onClick={onClick} className="flex flex-col items-center gap-1.5 group/action">
+      <div className={`p-3 rounded-full bg-black/20 backdrop-blur-sm lg:bg-transparent lg:backdrop-blur-none transition-all duration-200 group-hover/action:bg-white/10 group-active/action:scale-90 shadow-sm ${active ? 'text-brand' : 'text-white'}`}>
+        <div style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }}>
+          {icon}
+        </div>
       </div>
       {label && (
-        <span className="text-white text-xs font-medium">{label}</span>
+        <span className="text-white text-[12px] font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">{label}</span>
       )}
     </button>
   );
