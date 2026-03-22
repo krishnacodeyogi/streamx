@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Bell } from 'lucide-react';
 import { useStore } from '@/hooks/useStore';
 import { toggleSubscribe } from '@/lib/api';
 
@@ -46,13 +47,20 @@ export default function SubscribeButton({ channelId }: SubscribeButtonProps) {
     <button
       onClick={handleSubscribe}
       disabled={loading}
-      className={`px-6 py-2 font-medium rounded-full transition-colors ${
+      className={`flex items-center gap-2 px-6 py-2 font-medium rounded-full transition-colors ${
         subscribed
           ? 'bg-surface-secondary text-text-primary hover:bg-surface-tertiary'
           : 'bg-text-primary text-surface-primary hover:bg-text-secondary'
       }`}
     >
-      {subscribed ? 'Subscribed' : 'Subscribe'}
+      {subscribed ? (
+        <>
+          <Bell className="w-4 h-4" />
+          Subscribed
+        </>
+      ) : (
+        'Subscribe'
+      )}
     </button>
   );
 }
