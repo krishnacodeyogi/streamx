@@ -48,7 +48,10 @@ export default function VideoInfo({ video }: VideoInfoProps) {
   }, [video.id]);
 
   const handleLike = async () => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      alert('Please sign in to like videos');
+      return;
+    }
     const newReaction = reaction === 'like' ? 'none' : 'like';
     setReaction(newReaction);
 
@@ -58,7 +61,10 @@ export default function VideoInfo({ video }: VideoInfoProps) {
   };
 
   const handleDislike = async () => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      alert('Please sign in to dislike videos');
+      return;
+    }
     const newReaction = reaction === 'dislike' ? 'none' : 'dislike';
     setReaction(newReaction);
 
@@ -68,7 +74,10 @@ export default function VideoInfo({ video }: VideoInfoProps) {
   };
 
   const handleSubscribe = async () => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      alert('Please sign in to subscribe');
+      return;
+    }
     const willSubscribe = !subscribed;
     setSubscribed(willSubscribe);
 

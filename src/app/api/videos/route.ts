@@ -89,9 +89,11 @@ export async function GET(req: NextRequest) {
     if (sortBy === 'views') {
       filtered.sort((a, b) => (b.views || 0) - (a.views || 0));
     } else {
-      filtered.sort((a, b) => 
-        new Date(b.uploaded_at).getTime() - new Date(a.uploaded_at).getTime()
-      );
+      filtered.sort((a, b) => {
+        const dateA = new Date(a.uploaded_at || a.created_at || 0).getTime();
+        const dateB = new Date(b.uploaded_at || b.created_at || 0).getTime();
+        return (dateB || 0) - (dateA || 0);
+      });
     }
 
     if (limit > 0) {

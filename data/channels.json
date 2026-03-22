@@ -2,9 +2,11 @@
   "d822baa2-b53d-4aee-9474-a96dc526aa2a": {
     "id": "d822baa2-b53d-4aee-9474-a96dc526aa2a",
     "name": "krishna",
-    "avatar_url": "https://picsum.photos/seed/d822baa2-b53d-4aee-9474-a96dc526aa2a/64/64",
+    "avatar_url": "/uploads/thumbnails/1774177781898-thumbnail.jpg",
     "subscribers": 1,
-    "verified": false
+    "verified": false,
+    "banner_url": "/uploads/thumbnails/1774177798574-thumbnail.jpg",
+    "bio": ""
   },
   "40e0440e-f7fe-47ec-83db-5591c0824277": {
     "subscribers": 2,

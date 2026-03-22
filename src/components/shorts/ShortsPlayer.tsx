@@ -133,6 +133,9 @@ function ShortCard({
   const [reaction, setReaction] = useState<'like' | 'dislike' | 'none'>('none');
   const [subscribed, setSubscribed] = useState(false);
   const [subCount, setSubCount] = useState(video.channel.subscribers);
+  const [avatarError, setAvatarError] = useState(false);
+
+  const avatarUrl = video.channel.avatarUrl || `https://picsum.photos/seed/${video.channel.id}/64/64`;
 
   // Auto-play/pause based on visibility + track view
   useEffect(() => {
@@ -181,7 +184,10 @@ function ShortCard({
 
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!currentUser) return;
+    if (!currentUser) {
+      alert('Please sign in to like videos');
+      return;
+    }
     const newReaction = reaction === 'like' ? 'none' : 'like';
     setReaction(newReaction);
     const result = await toggleLike(video.id, newReaction, currentUser.id);
@@ -190,7 +196,10 @@ function ShortCard({
 
   const handleDislike = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!currentUser) return;
+    if (!currentUser) {
+      alert('Please sign in to dislike videos');
+      return;
+    }
     const newReaction = reaction === 'dislike' ? 'none' : 'dislike';
     setReaction(newReaction);
     await toggleLike(video.id, newReaction, currentUser.id);
@@ -198,7 +207,10 @@ function ShortCard({
 
   const handleSubscribe = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!currentUser) return;
+    if (!currentUser) {
+      alert('Please sign in to subscribe');
+      return;
+    }
     const willSubscribe = !subscribed;
     setSubscribed(willSubscribe);
     const newCount = await toggleSubscribe(
@@ -313,9 +325,10 @@ function ShortCard({
           {/* Channel avatar */}
           <div className="relative">
             <img
-              src={video.channel.avatarUrl}
+              src={avatarError ? `https://picsum.photos/seed/${video.channel.id}/64/64` : avatarUrl}
               alt={video.channel.name}
               className="w-9 h-9 rounded-full border-2 border-white object-cover"
+              onError={() => setAvatarError(true)}
             />
           </div>
         </div>

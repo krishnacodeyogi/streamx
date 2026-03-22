@@ -10,8 +10,9 @@ interface PageProps {
   params: { id: string };
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const channel = await getChannel(params.id);
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const { id } = params;
+  const channel = await getChannel(id);
   if (!channel) return { title: 'Channel Not Found' };
   return {
     title: `${channel.name} - StreamX`,
@@ -19,11 +20,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function ChannelPage({ params }: PageProps) {
-  const channel = await getChannel(params.id);
+export default async function ChannelPage({ params }: { params: { id: string } }) {
+  const { id } = params;
+  const channel = await getChannel(id);
   if (!channel) notFound();
 
-  const videos = await getVideos({ channelId: channel.id });
+  const videos = await getVideos({ channelId: id });
 
   return (
     <div className="min-h-screen pb-16">

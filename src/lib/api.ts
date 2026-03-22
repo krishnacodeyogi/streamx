@@ -8,7 +8,7 @@ import type { Video, Channel, Comment, SearchFilters } from '@/types';
 // Detect API base URL for server-side fetches
 // In development, port might change (3000, 3001, 3002, 3005, etc.)
 const PORT = process.env.PORT || 3005; // Explicitly using 3005 as we just started the server on it
-const API_BASE = typeof window !== 'undefined' ? '' : `http://localhost:${PORT}`;
+const API_BASE = typeof window !== 'undefined' ? '' : `http://127.0.0.1:${PORT}`;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -84,10 +84,7 @@ export async function searchContent(filters: ExtendedSearchFilters): Promise<Sea
 
     const url = `${API_BASE}/api/videos?${params.toString()}`;
     const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) {
-      console.error(`Fetch failed (${res.status}): ${url}`);
-      throw new Error(`Failed to fetch search results: ${res.status}`);
-    }
+    if (!res.ok) throw new Error(`Failed to fetch search results: ${res.status}`);
     const data = await res.json();
     
     // Handle both old array format and new object format

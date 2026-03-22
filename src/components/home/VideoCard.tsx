@@ -20,9 +20,13 @@ interface VideoCardProps {
 export default function VideoCard({ video, compact = false, hideChannel = false }: VideoCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
   const currentUser = useStore((s) => s.currentUser);
 
   const isOwner = currentUser?.id === video.channel.id;
+
+  const thumbnailUrl = video.thumbnailUrl || `https://picsum.photos/seed/${video.id}/640/360`;
+  const avatarUrl = video.channel.avatarUrl || `https://picsum.photos/seed/${video.channel.id}/64/64`;
 
   const handleDelete = async () => {
     if (!currentUser?.id) return;
@@ -43,7 +47,7 @@ export default function VideoCard({ video, compact = false, hideChannel = false 
         {/* Thumbnail */}
         <div className="relative shrink-0 w-40 h-24 rounded-xl overflow-hidden bg-surface-tertiary">
           <Image
-            src={imgError ? `https://picsum.photos/seed/${video.id}/320/180` : video.thumbnailUrl}
+            src={imgError ? `https://picsum.photos/seed/${video.id}/320/180` : thumbnailUrl}
             alt={video.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -72,7 +76,7 @@ export default function VideoCard({ video, compact = false, hideChannel = false 
       {/* Thumbnail */}
       <Link href={`/watch/${video.id}`} className="block relative aspect-video rounded-xl overflow-hidden bg-surface-tertiary">
         <Image
-          src={imgError ? `https://picsum.photos/seed/${video.id}/640/360` : video.thumbnailUrl}
+          src={imgError ? `https://picsum.photos/seed/${video.id}/640/360` : thumbnailUrl}
           alt={video.title}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -95,10 +99,11 @@ export default function VideoCard({ video, compact = false, hideChannel = false 
           <Link href={`/channel/${video.channel.id}`} className="shrink-0 mt-0.5">
             <div className="relative w-9 h-9 rounded-full overflow-hidden bg-surface-tertiary">
               <Image
-                src={video.channel.avatarUrl}
+                src={avatarError ? `https://picsum.photos/seed/${video.channel.id}/64/64` : avatarUrl}
                 alt={video.channel.name}
                 fill
                 className="object-cover"
+                onError={() => setAvatarError(true)}
                 sizes="36px"
               />
             </div>
