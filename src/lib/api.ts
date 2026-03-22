@@ -86,9 +86,13 @@ export async function searchContent(filters: ExtendedSearchFilters): Promise<Sea
     if (!res.ok) throw new Error('Failed to fetch search results');
     const data = await res.json();
     
+    // Handle both old array format and new object format
+    const videoData = Array.isArray(data) ? data : (data.videos ?? []);
+    const channelData = Array.isArray(data) ? [] : (data.channels ?? []);
+
     return {
-      videos: (data.videos ?? []).map(mapVideo),
-      channels: (data.channels ?? []).map((c: any) => ({
+      videos: videoData.map(mapVideo),
+      channels: channelData.map((c: any) => ({
         id: c.id,
         name: c.name,
         avatarUrl: c.avatar_url ?? '',
@@ -132,7 +136,10 @@ export async function getRelatedVideos(videoId: string, category: string): Promi
     const res = await fetch(`${API_BASE}/api/videos?${params.toString()}`, { cache: 'no-store' });
     if (!res.ok) throw new Error('Failed to fetch related videos');
     const data = await res.json();
-    return (data ?? []).map(mapVideo);
+    
+    // Handle both old array format and new object format
+    const videoData = Array.isArray(data) ? data : (data.videos ?? []);
+    return videoData.map(mapVideo);
   } catch (err) {
     console.error('Failed to fetch related videos:', err);
     return [];
