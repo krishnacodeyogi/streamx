@@ -79,6 +79,17 @@ export interface SearchFilters {
   excludeShorts: boolean;
 }
 
+// ─── Playlist Types ────────────────────────────────────────────────────────────
+export interface Playlist {
+  id: string;
+  name: string;
+  description: string;
+  userId: string;
+  videoIds: string[];
+  isPrivate: boolean;
+  createdAt: string;
+}
+
 // ─── Store Types (Zustand) ────────────────────────────────────────────────────
 export interface AppStore {
   sidebarOpen: boolean;

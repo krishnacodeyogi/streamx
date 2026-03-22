@@ -3,7 +3,7 @@
  */
 
 import { supabase } from '@/lib/supabase';
-import type { Video, Channel, Comment, SearchFilters } from '@/types';
+import type { Video, Channel, Comment, SearchFilters, Playlist } from '@/types';
 
 // Detect API base URL for server-side fetches
 // In development, port might change (3000, 3001, 3002, 3005, etc.)
@@ -425,5 +425,61 @@ export async function deleteVideo(videoId: string, userId: string): Promise<bool
   } catch (err) {
     console.error('Failed to delete video:', err);
     throw err;
+  }
+}
+
+// ─── Playlists ───────────────────────────────────────────────────────────────
+
+export async function getPlaylists(userId: string): Promise<Playlist[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/playlists?userId=${userId}`, { cache: 'no-store' });
+    if (!res.ok) throw new Error('Failed to fetch playlists');
+    return await res.json();
+  } catch (err) {
+    console.error('Failed to fetch playlists:', err);
+    return [];
+  }
+}
+
+export async function createPlaylist(userId: string, data: { name: string; description?: string; isPrivate?: boolean }): Promise<Playlist | null> {
+  try {
+    const res = await fetch('/api/playlists', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...data, userId }),
+    });
+    if (!res.ok) throw new Error('Failed to create playlist');
+    return await res.json();
+  } catch (err) {
+    console.error('Failed to create playlist:', err);
+    return null;
+  }
+}
+
+export async function updatePlaylistVideos(playlistId: string, videoIds: string[]): Promise<Playlist | null> {
+  try {
+    const res = await fetch(`/api/playlists/${playlistId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ videoIds }),
+    });
+    if (!res.ok) throw new Error('Failed to update playlist videos');
+    return await res.json();
+  } catch (err) {
+    console.error('Failed to update playlist videos:', err);
+    return null;
+  }
+}
+
+export async function deletePlaylist(playlistId: string): Promise<boolean> {
+  try {
+    const res = await fetch(`/api/playlists/${playlistId}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error('Failed to delete playlist');
+    return true;
+  } catch (err) {
+    console.error('Failed to delete playlist:', err);
+    return false;
   }
 }

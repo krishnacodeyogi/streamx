@@ -1,0 +1,31 @@
+{
+  "pl_1774198297013_4txh9": {
+    "id": "pl_1774198297013_4txh9",
+    "name": "My Test Playlist",
+    "description": "Testing playlist creation feature.",
+    "userId": "57f33cf6-a0b3-4633-b265-038877c29db6",
+    "videoIds": [
+      "v_1774195218333"
+    ],
+    "isPrivate": false,
+    "createdAt": "2026-03-22T16:51:37.040Z"
+  },
+  "pl_1774198931217_8w3gf": {
+    "id": "pl_1774198931217_8w3gf",
+    "name": "My Test Playlist 2",
+    "description": "",
+    "userId": "57f33cf6-a0b3-4633-b265-038877c29db6",
+    "videoIds": [],
+    "isPrivate": false,
+    "createdAt": "2026-03-22T17:02:11.217Z"
+  },
+  "pl_1774199139172_hhdlr": {
+    "id": "pl_1774199139172_hhdlr",
+    "name": "body",
+    "description": "",
+    "userId": "40e0440e-f7fe-47ec-83db-5591c0824277",
+    "videoIds": [],
+    "isPrivate": false,
+    "createdAt": "2026-03-22T17:05:39.172Z"
+  }
+}

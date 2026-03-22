@@ -15,10 +15,11 @@ import {
   ChevronUp,
   CheckCircle2,
 } from 'lucide-react';
-import { formatViews, formatSubscribers, timeAgo } from '@/utils/formatters';
 import { toggleLike, toggleSubscribe } from '@/lib/api';
+import { formatViews, formatSubscribers, timeAgo } from '@/utils/formatters';
 import type { Video } from '@/types';
 import { useStore } from '@/hooks/useStore';
+import SaveToPlaylistModal from '@/components/playlists/SaveToPlaylistModal';
 
 interface VideoInfoProps {
   video: Video;
@@ -33,6 +34,7 @@ export default function VideoInfo({ video }: VideoInfoProps) {
   const [subscriberCount, setSubscriberCount] = useState(video.channel.subscribers);
   const [descExpanded, setDescExpanded] = useState(false);
   const [viewCount, setViewCount] = useState(video.views);
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -167,7 +169,7 @@ export default function VideoInfo({ video }: VideoInfoProps) {
 
           <ActionBtn icon={<Share2 className="w-4 h-4" />} label="Share" />
           <ActionBtn icon={<Download className="w-4 h-4" />} label="Download" />
-          <ActionBtn icon={<Bookmark className="w-4 h-4" />} label="Save" />
+          <ActionBtn icon={<Bookmark className="w-4 h-4" />} label="Save" onClick={() => setShowSaveModal(true)} />
           <ActionBtn icon={<MoreHorizontal className="w-4 h-4" />} label="" />
         </div>
       </div>
@@ -199,13 +201,20 @@ export default function VideoInfo({ video }: VideoInfoProps) {
           )}
         </button>
       </div>
+
+      {showSaveModal && (
+        <SaveToPlaylistModal videoId={video.id} onClose={() => setShowSaveModal(false)} />
+      )}
     </div>
   );
 }
 
-function ActionBtn({ icon, label }: { icon: React.ReactNode; label: string }) {
+function ActionBtn({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick?: () => void }) {
   return (
-    <button className="flex items-center gap-1.5 bg-surface-tertiary hover:bg-border text-text-primary px-4 py-2 rounded-full text-sm font-medium transition-colors">
+    <button 
+      onClick={onClick}
+      className="flex items-center gap-1.5 bg-surface-tertiary hover:bg-border text-text-primary px-4 py-2 rounded-full text-sm font-medium transition-colors"
+    >
       {icon}
       {label && <span>{label}</span>}
     </button>

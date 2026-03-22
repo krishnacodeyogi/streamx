@@ -8,6 +8,7 @@ import { formatViews, timeAgo } from '@/utils/formatters';
 import type { Video } from '@/types';
 import { useStore } from '@/hooks/useStore';
 import { deleteVideo } from '@/lib/api';
+import SaveToPlaylistModal from '@/components/playlists/SaveToPlaylistModal';
 
 interface VideoCardProps {
   video: Video;
@@ -21,6 +22,7 @@ export default function VideoCard({ video, compact = false, hideChannel = false 
   const [menuOpen, setMenuOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
   const currentUser = useStore((s) => s.currentUser);
 
   const isOwner = currentUser?.id === video.channel.id;
@@ -87,8 +89,16 @@ export default function VideoCard({ video, compact = false, hideChannel = false 
 
         {/* Hover overlay buttons */}
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-end p-2 gap-1">
-          <ActionPill icon={<Clock className="w-3.5 h-3.5" />} label="Watch Later" />
-          <ActionPill icon={<BookmarkPlus className="w-3.5 h-3.5" />} label="Save" />
+          <ActionPill icon={<Clock className="w-3.5 h-3.5" />} label="Watch Later" onClick={(e) => e.preventDefault()} />
+          <ActionPill 
+            icon={<BookmarkPlus className="w-3.5 h-3.5" />} 
+            label="Save" 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowSaveModal(true);
+            }} 
+          />
         </div>
       </Link>
 
@@ -175,6 +185,12 @@ export default function VideoCard({ video, compact = false, hideChannel = false 
           </p>
         </div>
       </div>
+      
+      {showSaveModal && (
+        <div onClick={(e) => e.stopPropagation()}>
+          <SaveToPlaylistModal videoId={video.id} onClose={() => setShowSaveModal(false)} />
+        </div>
+      )}
     </article>
   );
 }
@@ -187,11 +203,11 @@ function DurationBadge({ duration }: { duration: string }) {
   );
 }
 
-function ActionPill({ icon, label }: { icon: React.ReactNode; label: string }) {
+function ActionPill({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick?: (e: any) => void }) {
   return (
     <button
       className="flex items-center gap-1 bg-black/80 hover:bg-black text-white text-xs px-2 py-1 rounded-full transition-colors"
-      onClick={(e) => e.preventDefault()}
+      onClick={onClick || ((e) => e.preventDefault())}
     >
       {icon}
       <span className="hidden sm:inline">{label}</span>
