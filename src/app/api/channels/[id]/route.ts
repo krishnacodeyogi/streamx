@@ -20,14 +20,15 @@ async function writeChannels(data: any) {
 // GET /api/channels/[id] — get channel details
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const id = params.id;
     const channels = await readChannels();
-    let channel = channels[params.id];
+    let channel = channels[id];
 
     if (!channel) {
       // Return a default channel object for users without a profile yet
       // This prevents 404 on the channel page
       channel = {
-        id: params.id,
+        id: id,
         name: 'New User',
         avatar_url: '',
         subscribers: 0,
@@ -45,13 +46,14 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 // PATCH /api/channels/[id] — update profile details
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const id = params.id;
     const body = await req.json();
     const channels = await readChannels();
     
-    if (!channels[params.id]) {
+    if (!channels[id]) {
       // Create if not exists (for new users)
-      channels[params.id] = {
-        id: params.id,
+      channels[id] = {
+        id: id,
         name: 'New User',
         avatar_url: '',
         subscribers: 0,
@@ -60,14 +62,14 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     const updated = {
-      ...channels[params.id],
-      name: body.name ?? channels[params.id].name,
-      avatar_url: body.avatarUrl ?? channels[params.id].avatar_url,
-      banner_url: body.bannerUrl ?? channels[params.id].banner_url,
-      bio: body.bio ?? channels[params.id].bio,
+      ...channels[id],
+      name: body.name ?? channels[id].name,
+      avatar_url: body.avatarUrl ?? channels[id].avatar_url,
+      banner_url: body.bannerUrl ?? channels[id].banner_url,
+      bio: body.bio ?? channels[id].bio,
     };
 
-    channels[params.id] = updated;
+    channels[id] = updated;
     await writeChannels(channels);
 
     return NextResponse.json(updated);
