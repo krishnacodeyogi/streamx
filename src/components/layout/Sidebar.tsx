@@ -87,7 +87,7 @@ export default function Sidebar() {
               <Divider />
               <div className="px-4 py-3">
                 <p className="text-text-muted text-xs leading-relaxed">
-                  © 2024 StreamX · Privacy · Terms
+                  © 2026 StreamX · Privacy · Terms
                 </p>
               </div>
             </>
